@@ -1,0 +1,5 @@
+.flowbite-react
+.husky
+.next
+node_modules
+.prettierrc
