@@ -1,6 +1,9 @@
 import { createTheme, ThemeProvider } from "flowbite-react";
 import "./App.css";
 import AppLayout from "./components/AppLayout";
+import DataLayout from "./components/DataLayout";
+import TableView from "./components/TableView";
+import { useAppStore } from "./store/AppStore";
 
 const customTheme = createTheme({
   sidebar: {
@@ -20,79 +23,78 @@ const customTheme = createTheme({
   },
 });
 
-// const mockData = [
-//   {
-//     description: "Мой пушистый кот",
-//     uploadDate: new Date("2023-10-20").toLocaleDateString(),
-//     size: "1.2 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-//   {
-//     description: "Щенок золотистого ретривера",
-//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
-//     size: "2.4 MB",
-//   },
-// ];
+const mockData = [
+  {
+    description: "Мой пушистый кот",
+    uploadDate: new Date("2023-10-20").toLocaleDateString(),
+    size: "1.2 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+  {
+    description: "Щенок золотистого ретривера",
+    uploadDate: new Date("2023-10-21").toLocaleDateString(),
+    size: "2.4 MB",
+  },
+];
 
 function App() {
-  // const { isTableViewMode } = useAppStore();
+  const { isTableViewMode } = useAppStore();
 
   return (
     <ThemeProvider theme={customTheme}>
       <AppLayout>
-        <div></div>
-        {/* <DataLayout>
+        <DataLayout>
           {isTableViewMode && <TableView data={mockData} />}
-        </DataLayout> */}
+        </DataLayout>
       </AppLayout>
     </ThemeProvider>
   );
