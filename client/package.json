@@ -17,9 +17,15 @@
     "check": "npm run check-format && npm run check-lint && npm run check-types && npm run build"
   },
   "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
     "flowbite-react": "^0.11.7",
+    "lucide-react": "^0.506.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
+    "react-hook-form": "^7.56.1",
+    "react-router-dom": "^7.5.3",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
