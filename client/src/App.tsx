@@ -1,34 +1,100 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { createTheme, ThemeProvider } from "flowbite-react";
 import "./App.css";
+import AppLayout from "./components/AppLayout";
+
+const customTheme = createTheme({
+  sidebar: {
+    root: {
+      inner: "h-full rounded-none dark:bg-black",
+    },
+    logo: {
+      img: "w-full sm:h-auto",
+    },
+    item: {
+      active: "bg-primary-200 dark:bg-primary-900",
+    },
+  },
+
+  button: {
+    base: "cursor-pointer",
+  },
+});
+
+// const mockData = [
+//   {
+//     description: "Мой пушистый кот",
+//     uploadDate: new Date("2023-10-20").toLocaleDateString(),
+//     size: "1.2 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+//   {
+//     description: "Щенок золотистого ретривера",
+//     uploadDate: new Date("2023-10-21").toLocaleDateString(),
+//     size: "2.4 MB",
+//   },
+// ];
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const { isTableViewMode } = useAppStore();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <ThemeProvider theme={customTheme}>
+      <AppLayout>
+        <div></div>
+        {/* <DataLayout>
+          {isTableViewMode && <TableView data={mockData} />}
+        </DataLayout> */}
+      </AppLayout>
+    </ThemeProvider>
   );
 }
 
