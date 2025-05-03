@@ -10,6 +10,7 @@ import {
 } from "flowbite-react";
 import { Image, Moon, Upload } from "lucide-react";
 import { ReactNode, useState } from "react";
+import UploadImageModal from "./UploadImageModal";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { mode } = useThemeMode();
@@ -53,11 +54,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </Sidebar>
       </header>
 
-      <div hidden={!isModalOpen}></div>
-      {/* <UploadImageModal
+      <UploadImageModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      /> */}
+      />
       <main className="w-full p-10 dark:bg-black">{children}</main>
     </div>
   );
