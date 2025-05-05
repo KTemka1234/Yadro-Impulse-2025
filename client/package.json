@@ -9,7 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "postinstall": "flowbite-react patch",
-    "prepare": "husky",
     "check-types": "tsc --pretty --noEmit",
     "check-format": "prettier --check .",
     "check-lint": "eslint . --ext .js,.jsx,.ts,.tsx",

@@ -1,0 +1,23 @@
+name: "Yadro-Impulse-2025"
+services:
+  backend:
+    build: ./server
+    container_name: backend
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-8000}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+    volumes:
+      - ./server/storage:/app/storage
+    ports:
+      - ${BACKEND_PORT:-3000}:${BACKEND_PORT:-3000}
+    restart: unless-stopped
+
+  frontend:
+    build: ./client
+    container_name: frontend
+    environment:
+      - VITE_PORT=${VITE_PORT:-5173}
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:8000}
+    ports:
+      - ${PORT:-5173}:${PORT:-5173}
+    restart: unless-stopped
