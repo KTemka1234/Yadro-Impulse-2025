@@ -1,25 +1,26 @@
 import { create } from "zustand";
+import { PetData } from "../components/TableView";
 
 type SelectionStore = {
-  selectedIds: string[];
+  selectedRows: PetData[];
   actions: {
-    setSelectedIds: (ids: string[]) => void;
+    setSelectedRows: (rows: PetData[]) => void;
     clearSelection: () => void;
     getSelectedCount: () => number;
   };
 };
 
 export const useSelectionStore = create<SelectionStore>((set, get) => ({
-  selectedIds: [],
+  selectedRows: [],
   actions: {
-    setSelectedIds: (ids) => set({ selectedIds: ids }),
-    clearSelection: () => set({ selectedIds: [] }),
-    getSelectedCount: () => get().selectedIds.length,
+    setSelectedRows: (rows) => set({ selectedRows: rows }),
+    clearSelection: () => set({ selectedRows: [] }),
+    getSelectedCount: () => get().selectedRows.length,
   },
 }));
 
 // Оптимизированные хуки для доступа
-export const useSelectedIds = () =>
-  useSelectionStore((state) => state.selectedIds);
+export const useSelectedRows = () =>
+  useSelectionStore((state) => state.selectedRows);
 export const useSelectionActions = () =>
   useSelectionStore((state) => state.actions);

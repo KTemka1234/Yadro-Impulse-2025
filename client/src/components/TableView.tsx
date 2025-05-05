@@ -21,26 +21,27 @@ import {
 } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useAppStore } from "../store/AppStore";
-import { useSelectedIds, useSelectionActions } from "../store/TableStore";
+import { useSelectedRows, useSelectionActions } from "../store/TableStore";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type PetData = {
+export type PetData = {
+  id: string;
   description: string;
   uploadDate: string;
   size: string;
+  asciiArt: string;
 };
 
 const columnHelper = createColumnHelper<PetData>();
-
 const columns = [
   columnHelper.display({
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-      />
-    ),
+    // header: ({ table }) => (
+    //   <Checkbox
+    //     checked={table.getIsAllRowsSelected()}
+    //     onChange={table.getToggleAllRowsSelectedHandler()}
+    //   />
+    // ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -48,9 +49,6 @@ const columns = [
         onChange={row.getToggleSelectedHandler()}
       />
     ),
-    meta: {
-      className: "w-16",
-    },
   }),
 
   columnHelper.accessor("description", {
@@ -71,9 +69,8 @@ const columns = [
 
 export default function TableView({ data }: { data: PetData[] }) {
   const { searchQuery } = useAppStore();
-  const selectedIds = useSelectedIds();
-  const { setSelectedIds } = useSelectionActions();
-
+  const selectedRows = useSelectedRows();
+  const { setSelectedRows: setSelectedRows } = useSelectionActions();
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -88,9 +85,9 @@ export default function TableView({ data }: { data: PetData[] }) {
     data,
     columns,
     state: {
-      rowSelection: selectedIds.reduce(
-        (acc, id) => {
-          acc[id] = true;
+      rowSelection: selectedRows.reduce(
+        (acc, row) => {
+          acc[row.id] = true;
           return acc;
         },
         {} as Record<string, boolean>,
@@ -104,16 +101,17 @@ export default function TableView({ data }: { data: PetData[] }) {
           ? updater(table.getState().rowSelection)
           : updater;
 
-      // Сохраняем только ID выбранных строк
-      const ids = Object.keys(newSelection).filter((id) => newSelection[id]);
-      setSelectedIds(ids);
+      const selected = data.filter((row) => newSelection[row.id]);
+      setSelectedRows(selected);
     },
+    getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: "includesString",
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     enableRowSelection: true,
+    enableMultiRowSelection: false,
   });
 
   const options = [10, 25, 50, 100];
@@ -124,10 +122,10 @@ export default function TableView({ data }: { data: PetData[] }) {
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map((header, idx) => (
                 <TableHeadCell
                   key={header.id}
-                  className={header.column.columnDef.meta?.className}
+                  className={idx === 0 ? "w-16" : ""}
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -141,7 +139,7 @@ export default function TableView({ data }: { data: PetData[] }) {
 
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow key={row.id} onClick={() => row.toggleSelected()}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

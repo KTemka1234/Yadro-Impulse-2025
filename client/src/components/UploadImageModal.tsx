@@ -6,12 +6,15 @@ import {
   Button,
   TextInput,
   Label,
+  Spinner,
 } from "flowbite-react";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { SubmitHandler, useForm } from "react-hook-form";
-import imageToAscii from "../imageToAsciiConverter";
+import imageToAscii from "../converters/imageToAsciiConverter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BACKEND_URL } from "../config";
 
 interface UploadImageModalProps {
   show: boolean;
@@ -29,6 +32,35 @@ export default function UploadImageModal({
 }: UploadImageModalProps) {
   const [uploadedFile, setUploadedFile] = useState<File>();
   const [isConverting, setIsConverting] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate: uploadImage, isPending: isUploading } = useMutation({
+    mutationKey: ["uploadImage"],
+    mutationFn: async (data: { asciiArt: string; description: string }) => {
+      const res = await fetch(BACKEND_URL + "/v1/pet", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ascii: data.asciiArt,
+          description: data.description,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText);
+      }
+      return { success: true, status: res.status };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["images"] });
+    },
+    onError: (error: Error) => {
+      alert("Что-то пошло не так!\nТекст ошибки: " + error.message);
+    },
+  });
 
   const {
     register,
@@ -59,7 +91,7 @@ export default function UploadImageModal({
     },
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = async () => {
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (uploadedFile === undefined) {
       setError("imageName", {
         type: "custom",
@@ -69,8 +101,9 @@ export default function UploadImageModal({
     }
     setIsConverting(true);
     const asciiArt = await imageToAscii(uploadedFile);
-    console.log(asciiArt);
     setIsConverting(false);
+    console.log(asciiArt);
+    uploadImage({ asciiArt, description: data.description });
     handleClose();
   };
 
@@ -128,6 +161,7 @@ export default function UploadImageModal({
               />
               {uploadedFile && (
                 <button
+                  type="button"
                   onClick={() => {
                     setUploadedFile(undefined);
                     reset({ imageName: "" });
@@ -151,15 +185,35 @@ export default function UploadImageModal({
             {...register("description", {
               required: "Введите описание фото",
               minLength: 1,
-              pattern: /^\S+$/i,
+              pattern: {
+                value: /^[а-яА-ЯёЁa-zA-Z0-9_ ]+$/i, // alpanumeric, underscore and whitespace
+                message:
+                  "Используйте только буквы, цифры, подчёркивания и пробелы",
+              },
             })}
           />
           <p className="text-sm text-red-500">{errors.description?.message}</p>
         </form>
       </ModalBody>
       <ModalFooter className="justify-center">
-        <Button type="submit" form="upload_image" disabled={isConverting}>
-          {isConverting ? "Конвертация..." : "Загрузить"}
+        <Button
+          type="submit"
+          form="upload_image"
+          disabled={isConverting || isUploading}
+        >
+          {isConverting ? (
+            <>
+              <Spinner size="md" />
+              Конвертация...
+            </>
+          ) : isUploading ? (
+            <>
+              <Spinner size="md" />
+              Отправка...
+            </>
+          ) : (
+            "Загрузить"
+          )}
         </Button>
       </ModalFooter>
     </Modal>

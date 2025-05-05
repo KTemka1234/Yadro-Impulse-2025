@@ -1,15 +1,16 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import { useAppStore } from "../store/AppStore";
+import { useSelectionStore } from "../store/TableStore";
 import DataViewMode from "./DataViewMode";
 import { Button, TextInput } from "flowbite-react";
 import { Search } from "lucide-react";
-import { useAppStore } from "../store/AppStore";
-import { useSelectionStore } from "../store/TableStore";
+import AsciiViewer from "./AsciiViewer";
 
 export default function DataLayout({ children }: { children: ReactNode }) {
   const { searchQuery, setSearchQuery } = useAppStore();
   const selectedIds = useSelectionStore();
-
-  const hasSelection = selectedIds.selectedIds.length > 0;
+  const [isViewerOpened, setIsViewerOpened] = useState(false);
+  const hasSelection = selectedIds.selectedRows.length > 0;
 
   return (
     <div className="flex w-full flex-col gap-5 rounded-lg bg-white p-5 dark:bg-gray-900">
@@ -20,8 +21,11 @@ export default function DataLayout({ children }: { children: ReactNode }) {
 
       <div className="flex flex-wrap justify-between gap-2.5 p-4">
         <div>
-          <Button color="red" hidden={!hasSelection}>
-            Удалить
+          <Button
+            onClick={() => setIsViewerOpened(true)}
+            hidden={!hasSelection}
+          >
+            Открыть
           </Button>
         </div>
         <TextInput
@@ -34,6 +38,12 @@ export default function DataLayout({ children }: { children: ReactNode }) {
           className="w-sm"
         />
       </div>
+      {isViewerOpened && (
+        <AsciiViewer
+          asciiArt={"ascii art"}
+          onClose={() => setIsViewerOpened(false)}
+        />
+      )}
       {children}
     </div>
   );
