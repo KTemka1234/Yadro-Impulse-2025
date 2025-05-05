@@ -1,54 +1,53 @@
-# React + TypeScript + Vite
+# 🚀 Client (frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📝 Описание
 
-Currently, two official plugins are available:
+Frontend часть приложения на React (Vite), предоставляющая пользовательский интерфейс для загрузки и преобразования исходного изображения в ASCII-арт.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🔧 Технологии
 
-## Expanding the ESLint configuration
+- **Язык**: [Typescript](https://www.typescriptlang.org/)
+- **Фреймворк**: [React](https://react.dev/)
+- **Сборщик проекта**: [Vite](https://vite.dev/)
+- **Форматирование**: [Prettier](https://prettier.io/) / [ESlint](https://eslint.org/)
+- **HTTP запросы**: [TanStack React Query](https://tanstack.com/query/latest)
+- **Стейт менеджер** [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
+- **UI**: [Tailwind CSS](https://tailwindcss.com/) / [Flowbite-React](https://flowbite-react.com/) / [TanStack React Table](https://tanstack.com/table/latest) / [Lucide-React](https://lucide.dev/) / [React-Dropzone](https://react-dropzone.js.org/#src) / [React-Hook-Form](https://react-hook-form.com/)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📁 Структура проекта
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+```
+client/
+├── public/          # Изображения для UI
+├── src/             # Исходный код
+└───└── store/       # Zustand стейты
+└───└── converters/  # Конвертер изображения в ASCII-арт
+└───└── components/  # UI компоненты
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📐 Алгоритм преобразования
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+1. При загрузке изображения создаётся временный HTML тег **canvas** (не размещается в DOM), с помощью которого исходное изображение сживается до значения желаемого размера ASCII-арта.
+2. Для каждого пикселя сжатого изображения рассчитывается его яркость по шкале серости с нормализацией по формуле ниже:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
+```Typescript
+// grayscale color: 0 - 1 (dark - bright)
+let brightness = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+```
+
+3. Далее для каждого используемого знака для ASCII-арта рассчитывается диапазон яркости
+4. В конце алгоритма получается строка, где каждый символ по яркости соответствует расчитанной яркости конкретного пикселя сжатого исходного изображения
+
+Таким образом получаем чёрно-белый ASCII-арт, однако если использовать ASNI символы, то можно сделать цветной ASCII-арт
+
+## Примечание
+
+В проекте можно поиграться с [настройками](./src/converters/imageToAsciiConverter.ts) преобразования изображения в ASCII-арт (UI для этого пока нет):
+
+```Typescript
+const DEFAULT_OPTIONS: AsciiOptions = {
+  width: 150, // половинная ширина ASCII-арта (каждый символ печатается дважды для соблюдения пропорций). Чем больше половинная ширина, тем детальнее получается ASCII-арт
+  chars: "¶@ØÆMåBNÊßÔR#8Q&mÃ0À$GXZA5ñk2S%±3Fz¢yÝCJf1t7ªLc¿+?(r/¤²!*;\"^:,'.` ", // набор используемых символов для ASCII-арта
+  contrast: 1.0, // контрастность ASCII-арта (если слишком "жирное" изображение, можно уменьшить контрастность)
+};
 ```
