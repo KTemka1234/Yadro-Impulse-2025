@@ -7,6 +7,7 @@ import (
 	"github.com/KTemka1234/Yadro-Impulse-2025/server/config"
 	"github.com/KTemka1234/Yadro-Impulse-2025/server/handlers"
 	"github.com/KTemka1234/Yadro-Impulse-2025/server/logger"
+	"github.com/KTemka1234/Yadro-Impulse-2025/server/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
@@ -19,7 +20,6 @@ func main() {
 
 	envPath := filepath.Join("..", ".env")
 
-	// Загружаем переменные
 	err := godotenv.Load(envPath)
 	if err != nil {
 		log.Error("Failed to load .env file:", zap.Error(err))
@@ -35,19 +35,21 @@ func main() {
 	if FRONTEND_URL == "" {
 		FRONTEND_URL = "http://localhost:5173"
 	}
-	
+
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: FRONTEND_URL,
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
 	app.Get("/v1/pet", handlers.GetPetImageV1(log))
-	app.Put("/v1/pet", handlers.PutPetImageV1(log))
-	
+	app.Put("/v1/pet",
+		middleware.ValidateBody(&handlers.AsciiPutRequest{}),
+		handlers.PutPetImageV1(log))
+
 	PORT := os.Getenv("BACKEND_PORT")
 	if PORT == "" {
 		PORT = "8000"
 	}
 
-	log.Fatal("Server stopped", zap.Error(app.Listen(":" + PORT)))
+	log.Fatal("Server stopped", zap.Error(app.Listen(":"+PORT)))
 }

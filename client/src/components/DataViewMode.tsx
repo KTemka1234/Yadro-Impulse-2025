@@ -1,9 +1,11 @@
 import { Button, ButtonGroup } from "flowbite-react";
 import { Check, LayoutGrid, Menu } from "lucide-react";
 import { useAppStore } from "../store/AppStore";
+import { useSelectionActions } from "../store/TableStore";
 
 export default function DataViewMode() {
   const { isTableViewMode, setIsTableViewMode } = useAppStore();
+  const { clearSelection } = useSelectionActions();
 
   return (
     <ButtonGroup className="rounded-full">
@@ -19,7 +21,10 @@ export default function DataViewMode() {
           <Button
             className="!rounded-r-full border-black p-2.5 focus:ring-0 dark:border-white"
             color="alternative"
-            onClick={() => setIsTableViewMode(false)}
+            onClick={() => {
+              setIsTableViewMode(false);
+              clearSelection();
+            }}
           >
             <LayoutGrid className="dark:text-white" size={20} />
           </Button>

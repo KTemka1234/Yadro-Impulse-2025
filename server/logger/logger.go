@@ -34,7 +34,7 @@ func RequestLogging(log *zap.Logger) fiber.Handler {
 		err := c.Next()
 		duration := time.Since(start)
 
-		log.Info("request",
+		log.Debug("request",
 			zap.String("method", c.Method()),
 			zap.String("path", c.Path()),
 			zap.Int("status", c.Response().StatusCode()),
